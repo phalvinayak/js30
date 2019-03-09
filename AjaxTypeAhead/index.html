@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Type Ahead 👀</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <form class="search-form">
+    <input type="text" class="search" placeholder="City or State">
+    <ul class="suggestions">
+      <li>Filter for a city</li>
+      <li>or a state</li>
+    </ul>
+  </form>
+<script>
+  const endpoint = 'https://gist.githubusercontent.com/Miserlou/c5cd8364bf9b2420bb29/raw/2bf258763cdddd704f8ffd3ea9a3e81d25e2c6f6/cities.json';
+  const cities = [];
+
+  fetch(endpoint)
+    .then(blob => blob.json())
+    .then(data => cities.push(...data));
+
+  function findMatches(wordToMatch, cities){
+    const regex = new RegExp(wordToMatch, "gi");
+    return cities.filter(place => {
+      return (place.city.match(regex) || place.state.match(regex))
+    });
+  }
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+  function displayMatches(){
+    let suggestionList;
+    let matchArray;
+    if(this.value){
+      const regex = new RegExp(this.value, "gi");
+      matchArray = findMatches(this.value, cities);
+      suggestionList = matchArray.map(place => {
+        const cityName = place.city.replace(regex, `<span class="hl">${this.value}</span>`);
+        const stateName = place.state.replace(regex, `<span class="hl">${this.value}</span>`);
+        return `<li>
+          <span class="name">${cityName}, ${stateName}</span>
+          <span class="population">${numberWithCommas(place.population)}</span>
+        </li>`
+      });
+    } else {
+      matchArray = ["Filter For A City", "Or A State"];
+      suggestionList = matchArray.map(text => {
+        return `<li>
+          <span class="name">${text}</span>
+        </li>`
+      });
+    }
+    suggestions.innerHTML = suggestionList.join("");
+  }
+
+  const input = document.querySelector(".search");
+  const suggestions = document.querySelector(".suggestions");
+
+  input.addEventListener("keyup", displayMatches);
+
+</script>
+</body>
+</html>
