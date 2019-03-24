@@ -45,4 +45,6 @@ _testmain.go
 #*.mp4
 #*.png
 #*.jpeg
-*.psd
+*.ps
+node_modules
+d
