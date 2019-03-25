@@ -30,13 +30,13 @@ function paintToCanvas(){
         // pixels = redEffect(pixels);
 
         // pixels = rgbSplit(pixels);
-        // ctx.globalAlpha = .1
+        // ctx.globalAlpha = .8
 
         pixels = greenScreen(pixels);
         // Put them back
         ctx.putImageData(pixels, 0, 0);
 
-    }, 16)
+    }, 16);
 }
 
 function takePhoto(){
@@ -66,14 +66,16 @@ function redEffect(pixels){
 
 function rgbSplit(pixels){
     for(let i=0; i < pixels.data.length; i+=4){
-        pixels.data[i-150] = pixels.data[i+0]; // Red
-        pixels.data[i+500] = pixels.data[i+1]; // Green
-        pixels.data[i-550] = pixels.data[i+2]; // Blue
+        pixels.data[i-50] = pixels.data[i+0]; // Red
+        pixels.data[i+200] = pixels.data[i+1]; // Green
+        pixels.data[i-150] = pixels.data[i+2]; // Blue
     }
     return pixels;
 }
 
 function greenScreen(pixels){
+    console.log(pixels);
+    debugger;
     const levels = {};
     [...document.querySelectorAll('.rgb input')].forEach(input => {
         levels[input.name] = input.value;
@@ -90,10 +92,10 @@ function greenScreen(pixels){
             && red <= levels.rmax
             && green <= levels.gmax
             && blue <= levels.bmax){
-                pixels.data[i+3] = 0;
+                pixels.data[i+3] = 0.5;
         }
     }
-    return  ;
+    return  pixels;
 }
 
 
